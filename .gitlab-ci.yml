@@ -1,0 +1,25 @@
+stages:
+  # - build
+  - deploy
+
+# build:
+#   stage: build
+#   image: elixir:latest
+#   script:
+#     - cp $CONFIG_FILE ./config/config.exs
+#     - MIX_ENV=prod mix local.hex --force
+#     - MIX_ENV=prod mix local.rebar --force
+#     - MIX_ENV=prod mix deps.get
+#     - MIX_ENV=prod mix compile
+#   artifacts:
+#     paths:
+#       - _build/
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - cp $CONFIG_FILE ./config/config.exs
+    - docker compose up --build --detach --remove-orphans

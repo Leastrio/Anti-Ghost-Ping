@@ -30,9 +30,18 @@ defmodule AntiGhostPing.Commands do
   def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "redirect", options: options}} = interaction),
     do: Commands.Redirect.slash_command(interaction, options)
 
-  def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "mention", options: [%{name: "enable", value: choice}]}} = interaction),
+  def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "mentions", options: [%{name: "enable", value: choice}]}} = interaction),
     do: Commands.Etoggle.slash_command(interaction, choice)
 
   def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "color", options: [%{name: "color", value: color}]}} = interaction),
     do: Commands.Color.slash_command(interaction, color)
+
+  def handle_slash_command(interaction) do
+    Nostrum.Api.create_interaction_response!(interaction, %{
+      type: 4,
+      data: %{
+        content: "Unhandled command. This is an error, please join the support server and report it."
+      }
+    })
+  end
 end

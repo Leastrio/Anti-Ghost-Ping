@@ -4,15 +4,15 @@ defmodule AntiGhostPing.Consumer do
   alias AntiGhostPing.Schema.Guilds
   alias AntiGhostPing.GhostPing
 
-  def handle_event({:READY, ready, _ws_state}) do
-    case Nostrum.Api.bulk_overwrite_global_application_commands(
-           AntiGhostPing.Commands.get_commands()
-         ) do
-      {:error, err} -> Logger.error("An Error occurred bulk registering commands:\n#{err}")
-      {:ok, _} -> Logger.info("Successfully bulk registered commands")
+  def handle_event({:READY, %{shard: {shard, num_shards}}, ws_state}) do
+    if shard == 0 do
+      case Nostrum.Api.bulk_overwrite_global_application_commands(AntiGhostPing.Commands.get_commands()) do
+        {:error, err} -> Logger.error("An Error occurred bulk registering commands:\n#{err}")
+        {:ok, _} -> Logger.info("Successfully bulk registered commands")
+      end
     end
-    Nostrum.Api.update_status(:online, "/ | https://ghostping.xyz")
-    Logger.info("#{ready.user.username} is ready!")
+    Nostrum.Api.update_shard_status(ws_state.conn_pid, :online, "/ | https://ghostping.xyz")
+    Logger.info("Shard #{shard + 1}/#{num_shards} connected")
   end
 
   def handle_event({:MESSAGE_CREATE, %Nostrum.Struct.Message{} = msg, _ws_state}) when is_nil(msg.author.bot) and not is_nil(msg.guild_id) do

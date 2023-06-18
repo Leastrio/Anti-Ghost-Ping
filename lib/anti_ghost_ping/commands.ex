@@ -31,7 +31,7 @@ defmodule AntiGhostPing.Commands do
     do: Commands.Redirect.slash_command(interaction, options)
 
   def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "mentions", options: [%{name: "enable", value: choice}]}} = interaction),
-    do: Commands.Etoggle.slash_command(interaction, choice)
+    do: Commands.Mention.slash_command(interaction, choice)
 
   def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "color", options: [%{name: "color", value: color}]}} = interaction),
     do: Commands.Color.slash_command(interaction, color)

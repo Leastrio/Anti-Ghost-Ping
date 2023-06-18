@@ -50,8 +50,8 @@ defmodule AntiGhostPing.Consumer do
     end
   end
 
-  def handle_event({:GUILD_DELETE, {guild, false}, _ws_state}) do
-    AntiGhostPing.Repo.delete(guild.id)
+  def handle_event({:GUILD_DELETE, {%Nostrum.Struct.Guild{id: id}, false}, _ws_state}) do
+    AntiGhostPing.Repo.delete(id)
   end
 
   def handle_event({:INTERACTION_CREATE, %Nostrum.Struct.Interaction{type: type} = interaction, _ws_state}) do

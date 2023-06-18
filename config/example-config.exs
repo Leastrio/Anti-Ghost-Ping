@@ -28,7 +28,7 @@ config :nostrum,
   ],
   caches: %{
     presences: Nostrum.Cache.PresenceCache.NoOp,
-    guilds: Nostrum.Cache.GuildCache.NoOp,
+    guilds: Nostrum.Cache.GuildCache.Mnesia,
     channels: Nostrum.Cache.ChannelCache.NoOp,
     members: Nostrum.Cache.MemberCache.NoOp,
     users: Nostrum.Cache.UserCache.Mnesia,

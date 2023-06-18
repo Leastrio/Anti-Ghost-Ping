@@ -38,4 +38,8 @@ config :nostrum,
 config :anti_ghost_ping,
   ecto_repos: [AntiGhostPing.Repo]
 
-config :logger, level: :info
+config :logger,
+  level: :info,
+  compile_time_purge_matching: [
+    [module: Nostrum.Shard.Event, function: "handle/3", level_lower_than: :error]
+  ]

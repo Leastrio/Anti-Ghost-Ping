@@ -41,5 +41,5 @@ config :anti_ghost_ping,
 config :logger,
   level: :info,
   compile_time_purge_matching: [
-    [module: Nostrum.Shard.Event, function: "handle/3", level_lower_than: :error]
+    [module: Nostrum.Shard.Event, level_lower_than: :error]
   ]

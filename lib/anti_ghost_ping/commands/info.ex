@@ -10,6 +10,7 @@ defmodule AntiGhostPing.Commands.Info do
     |> put_description("""
       - You can invite Anti Ghost Ping to your own server by clicking **[here](https://ghostping.xyz/invite)**
       - Join the support server for help **[here](https://ghostping.xyz/discord)**
+      - Vote **[here](https://top.gg/bot/699522828147490826/vote)** to show your support!
       """)
     |> put_color(16711712)
 

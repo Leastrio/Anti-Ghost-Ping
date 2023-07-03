@@ -6,7 +6,8 @@ defmodule AntiGhostPing.Commands do
     "etoggle" => Commands.Etoggle,
     "redirect" => Commands.Redirect,
     "mentions" => Commands.Mention,
-    "color" => Commands.Color
+    "color" => Commands.Color,
+    "whitelist" => Commands.Whitelist
   }
 
   def get_commands() do
@@ -35,6 +36,9 @@ defmodule AntiGhostPing.Commands do
 
   def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "color", options: [%{name: "color", value: color}]}} = interaction),
     do: Commands.Color.slash_command(interaction, color)
+
+  def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "whitelist", options: options}} = interaction),
+    do: Commands.Whitelist.slash_command(interaction, options)
 
   def handle_slash_command(interaction) do
     Nostrum.Api.create_interaction_response!(interaction, %{

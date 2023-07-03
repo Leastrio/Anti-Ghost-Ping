@@ -26,3 +26,6 @@ anti_ghost_ping-*.tar
 /tmp/
 
 config.exs
+
+/.devenv/
+/.direnv/

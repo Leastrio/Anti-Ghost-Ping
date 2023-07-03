@@ -3,20 +3,24 @@ defmodule AntiGhostPing.GhostPing do
   import Bitwise
 
   def handle_mention(config, msg) do
-    content = cond do
-      String.length(msg.content) > 2500 || config.mention_only ->
-        {:mentions, Enum.join(msg.mentions, " ") <> Enum.join(msg.mention_roles, " ")}
-      true -> {:message, msg.content}
+    if not AntiGhostPing.Schema.Whitelist.whitelisted?(msg.guild_id, msg.author.id) do
+      content = cond do
+        String.length(msg.content) > 2500 || config.mention_only ->
+          {:mentions, Enum.join(msg.mentions, " ") <> Enum.join(msg.mention_roles, " ")}
+        true -> {:message, msg.content}
+      end
+      send_alert(config, msg, content)
     end
-    send_alert(config, msg, content)
   end
 
   def handle_everyone(config, msg) do
-    content = cond do
-      String.length(msg.content) > 2500 || config.mention_only -> {:mentions, "Message contained @everyone and/or @here ping"}
-      true -> {:message, msg.content}
+    if not AntiGhostPing.Schema.Whitelist.whitelisted?(msg.guild_id, msg.author.id) do
+      content = cond do
+        String.length(msg.content) > 2500 || config.mention_only -> {:mentions, "Message contained @everyone and/or @here ping"}
+        true -> {:message, msg.content}
+      end
+      send_alert(config, msg, content)
     end
-    send_alert(config, msg, content)
   end
 
   def send_alert(config, msg, {type, content}) do

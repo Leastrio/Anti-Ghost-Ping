@@ -49,7 +49,7 @@ defmodule AntiGhostPing.Commands.Whitelist do
       true -> "Member already whitelisted, no changes happened."
       false ->
         if Enum.count(whitelist) + 1 > 15 do
-          "This guild has hit the 5 member whitelist max!"
+          "This guild has hit the 15 member whitelist max!"
         else
           AntiGhostPing.Schema.Whitelist.add_user(interaction.guild_id, id)
           "Member added to whitelist."

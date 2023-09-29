@@ -22,7 +22,7 @@ defmodule AntiGhostPing.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:nostrum, github: "Leastrio/nostrum", branch: "noop"},
+      {:nostrum, github: "Leastrio/nostrum"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:nebulex, "~> 2.5"},

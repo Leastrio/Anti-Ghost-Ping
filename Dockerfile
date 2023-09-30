@@ -19,6 +19,4 @@ FROM elixir:1.15.4
 RUN mkdir -p /opt/app
 COPY --from=build /export/ /opt/app
 
-USER default
-
 CMD ["sh", "-c", "anti_ghost_ping/bin/anti_ghost_ping eval \"AntiGhostPing.migrate\" && anti_ghost_ping/bin/anti_ghost_ping start"]

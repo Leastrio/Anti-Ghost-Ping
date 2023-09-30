@@ -1,22 +1,27 @@
-FROM elixir:1.15.4 as build
+FROM elixir:1.15.4 as builder
 
-COPY config config
-COPY lib lib
-COPY priv priv
-COPY mix.exs mix.exs
-COPY mix.lock mix.lock
-ENV MIX_ENV=prod
+ENV MIX_ENV="prod"
 
+WORKDIR /app
 RUN mix local.hex --force && mix local.rebar --force
+COPY mix.exs mix.lock ./
+RUN mix deps.get --only $MIX_ENV
 
-RUN mix deps.get && mix release
+RUN mkdir config
+COPY config/config.exs config/
+RUN mix deps.compile
 
-RUN mkdir /export && \
-    cp -r _build/prod/rel/anti_ghost_ping/ /export
+COPY priv priv
+COPY lib lib
+COPY .git .git
 
-FROM elixir:1.15.4
+RUN mix release
 
-RUN mkdir -p /opt/app
-COPY --from=build /export/ /opt/app
+FROM elixir:1.15.4-slim
 
-CMD ["sh", "-c", "anti_ghost_ping/bin/anti_ghost_ping eval \"AntiGhostPing.migrate\" && anti_ghost_ping/bin/anti_ghost_ping start"]
+WORKDIR /app
+
+COPY --from=builder /app/_build/prod/rel/anti_ghost_ping ./
+
+CMD ["sh", "-c", "/app/bin/anti_ghost_ping eval \"AntiGhostPing.migrate\" && /app/bin/anti_ghost_ping start"]
+

@@ -1,4 +1,4 @@
-FROM bitwalker/alpine-elixir:1.14 as build
+FROM elixir:1.15.4 as build
 
 COPY config config
 COPY lib lib
@@ -14,7 +14,7 @@ RUN mix deps.get && mix release
 RUN mkdir /export && \
     cp -r _build/prod/rel/anti_ghost_ping/ /export
 
-FROM bitwalker/alpine-elixir:1.14
+FROM elixir:1.15.4
 
 RUN mkdir -p /opt/app
 COPY --from=build /export/ /opt/app

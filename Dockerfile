@@ -13,6 +13,7 @@ RUN mix deps.compile
 
 COPY priv priv
 COPY lib lib
+copy rel rel
 COPY .git .git
 
 RUN mix release

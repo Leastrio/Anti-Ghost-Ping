@@ -5,6 +5,7 @@ services:
     depends_on:
       - database
     restart: always
+    network_mode: "host"
   database:
     image: postgres
     restart: always

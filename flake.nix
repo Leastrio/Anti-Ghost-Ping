@@ -18,6 +18,7 @@
         ({ pkgs, ... }: {
           packages = [pkgs.gnumake pkgs.gcc];
           languages.elixir.enable = true;
+          languages.erlang.enable = true;
           services.postgres.enable = true;
           services.postgres.listen_addresses = "127.0.0.1";
           services.postgres.initialScript = ''

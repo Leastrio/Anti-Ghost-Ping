@@ -4,13 +4,28 @@ defmodule AntiGhostPing.Consumer do
   alias AntiGhostPing.Schema.Guilds
   alias AntiGhostPing.GhostPing
 
+  @support_server 713504281260458066
+
   def handle_event({:READY, %{shard: {shard, num_shards}}, ws_state}) do
-    if shard == 0 do
+    if not :persistent_term.get(:agp_started, false) do
       case Nostrum.Api.bulk_overwrite_global_application_commands(AntiGhostPing.Commands.get_commands()) do
         {:error, err} -> Logger.error("An Error occurred bulk registering commands:\n#{err}")
         {:ok, _} -> Logger.info("Successfully bulk registered commands")
       end
+
+      case Nostrum.Api.bulk_overwrite_guild_application_commands(@support_server, [%{
+          name: "debug",
+          description: AntiGhostPing.Commands.Debug.description(),
+          options: AntiGhostPing.Commands.Debug.options(),
+          dm_permission: false
+        }]) do
+          {:error, err} -> Logger.error("An error occurred registering support commands:\n#{err}")
+          {:ok, _} -> Logger.info("Successfully registered support commands")
+        end
+
+      :persistent_term.put(:agp_started, true)
     end
+
     Nostrum.Api.update_shard_status(ws_state.conn_pid, :online, "/ | https://ghostping.xyz")
     Logger.info("Shard #{shard + 1}/#{num_shards} connected")
   end

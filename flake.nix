@@ -1,33 +1,29 @@
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    devenv.url = "github:cachix/devenv";
-  };
   outputs = {
     self,
     nixpkgs,
-    devenv
-  } @ inputs: 
-  let
-    pkgs = nixpkgs.legacyPackages."x86_64-linux";
-  in
-  {
-    devShell.x86_64-linux = devenv.lib.mkShell {
-      inherit inputs pkgs;
-      modules = [
-        ({ pkgs, ... }: {
-          packages = [pkgs.gnumake pkgs.gcc];
-          languages.elixir.enable = true;
-          languages.erlang.enable = true;
-          services.postgres.enable = true;
-          services.postgres.listen_addresses = "127.0.0.1";
-          services.postgres.initialScript = ''
-            CREATE USER agp SUPERUSER;
-            ALTER USER agp PASSWORD 'password';
-            CREATE DATABASE agp OWNER agp
-          '';
-        })
-      ];
-    };
-  };
+    flake-utils,
+  }:
+    flake-utils.lib.eachDefaultSystem
+    (
+      system: let
+        pkgs = import nixpkgs {
+          inherit system;
+        };
+
+        erlangVersion = "erlangR26";
+        elixirVersion = "elixir_1_15";
+
+        elixir = pkgs.beam.packages.${erlangVersion}.${elixirVersion};
+        erlang = pkgs.beam.interpreters.${erlangVersion};
+      in rec {
+        devShells.default = pkgs.mkShell {
+          buildInputs = [
+            elixir
+            erlang
+          ];
+          ERL_AFLAGS = "-kernel shell_history enabled";
+        };
+      }
+    );
 }

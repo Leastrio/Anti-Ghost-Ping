@@ -40,6 +40,9 @@ defmodule AntiGhostPing.Commands do
   def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "whitelist", options: options}} = interaction),
     do: Commands.Whitelist.slash_command(interaction, options)
 
+  def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: "debug", options: [%{name: "id", value: id}]}} = interaction),
+    do: Commands.Debug.slash_command(interaction, id)
+
   def handle_slash_command(interaction) do
     Nostrum.Api.create_interaction_response!(interaction, %{
       type: 4,

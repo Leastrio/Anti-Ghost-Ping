@@ -36,7 +36,7 @@ defmodule AntiGhostPing.Commands.Debug do
       %{content: "I have administrator permissions in this server!"}
     else
       sorted = Enum.sort(channels, fn {first, _, _}, {second, _, _} -> first.position <= second.position end)
-      desc = Enum.reduce(sorted, "R      S", fn {channel, read, send}, acc ->
+      desc = Enum.reduce(sorted, "R S\n", fn {channel, read, send}, acc ->
         acc <> "#{emoji(read)} #{emoji(send)} - #{channel.name}\n"
       end)
 

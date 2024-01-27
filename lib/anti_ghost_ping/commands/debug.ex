@@ -17,6 +17,8 @@ defmodule AntiGhostPing.Commands.Debug do
   ]
 
   def slash_command(interaction, server_id) do
+    Nostrum.Api.create_interaction_response!(interaction, %{type: 5})
+
     data = case Integer.parse(server_id) do
       {guild_id, _} ->
         case Nostrum.Cache.GuildCache.get(guild_id) do
@@ -29,7 +31,7 @@ defmodule AntiGhostPing.Commands.Debug do
       type: 4,
       data: data
     }
-    Nostrum.Api.create_interaction_response!(interaction, resp)
+    Nostrum.Api.edit_interaction_response!(interaction, resp)
   end
 
   def gen_embed(guild) do

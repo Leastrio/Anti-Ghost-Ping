@@ -14,6 +14,7 @@ config :anti_ghost_ping, AntiGhostPing.Repo,
   hostname: "127.0.0.1"
 
 config :nostrum,
+  token: System.get_env("BOT_TOKEN"),
   num_shards: :auto,
   gateway_intents: [
     :message_content,
@@ -37,5 +38,3 @@ config :logger,
     [module: Nostrum.Shard.Event, level_lower_than: :error],
     [module: Nostrum.Shard.Dispatch]
   ]
-
-import_config "#{config_env()}.exs"

@@ -21,5 +21,5 @@ deploy:
   services:
     - docker:dind
   script:
-    - cp $CONFIG_FILE /app/config/prod.exs
+    - echo $BOT_TOKEN
     - docker compose up --build --detach --remove-orphans

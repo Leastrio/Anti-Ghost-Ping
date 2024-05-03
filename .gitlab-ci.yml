@@ -21,5 +21,4 @@ deploy:
   services:
     - docker:dind
   script:
-    - cp $CONFIG_FILE ./config/config.exs
     - docker compose up --build --detach --remove-orphans

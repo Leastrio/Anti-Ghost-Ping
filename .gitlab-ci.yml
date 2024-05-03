@@ -21,4 +21,4 @@ deploy:
   services:
     - docker:dind
   script:
-    - docker compose up --build --detach --remove-orphans
+    - docker compose up --build --detach --remove-orphans -e BOT_TOKEN=${BOT_TOKEN}

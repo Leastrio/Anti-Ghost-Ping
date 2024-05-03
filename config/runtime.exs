@@ -27,7 +27,6 @@ config :nostrum,
     channels: Nostrum.Cache.ChannelCache.NoOp,
     members: Nostrum.Cache.MemberCache.NoOp,
     users: Nostrum.Cache.UserCache.Mnesia,
-    channel_guild_mapping: Nostrum.Cache.ChannelGuildMapping.NoOp
   }
 
 config :anti_ghost_ping,

@@ -6,8 +6,8 @@ services:
     restart: always
     network_mode: "host"
     environment:
-      - BOT_TOKEN
-  database:
+      - BOT_TOKEN=${BOT_TOKEN}
+  database: 
     image: postgres:15.5
     restart: always
     ports:

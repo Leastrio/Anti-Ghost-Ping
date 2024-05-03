@@ -14,6 +14,7 @@ config :anti_ghost_ping, AntiGhostPing.Repo,
   hostname: "127.0.0.1"
 
 config :nostrum,
+  token: System.get_env("BOT_TOKEN"),
   num_shards: :auto,
   gateway_intents: [
     :message_content,

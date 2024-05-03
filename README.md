@@ -1,4 +1,4 @@
-# AntiGhostPing
+# Anti Ghost Ping
 
 A discord bot that detects ghost pings
 

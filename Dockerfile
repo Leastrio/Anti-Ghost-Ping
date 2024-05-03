@@ -8,7 +8,6 @@ COPY mix.exs mix.lock ./
 RUN mix deps.get --only $MIX_ENV
 
 RUN mkdir config
-COPY config/runtime.exs config/
 COPY config/config.exs config/
 RUN mix deps.compile
 

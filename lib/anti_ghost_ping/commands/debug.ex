@@ -34,7 +34,7 @@ defmodule AntiGhostPing.Commands.Debug do
   def gen_resp(guild) do
     channels = calc_channel_perms(guild)
     if channels == :all do
-      %{content: "I have administrator permissions in this server!"}
+      {:content, "I have administrator permissions in this server!"}
     else
       sorted = Enum.sort(channels, fn {first, _, _}, {second, _, _} -> first.position <= second.position end)
       desc = Enum.reduce(sorted, "Read | Send\n", fn {channel, read, send}, acc ->

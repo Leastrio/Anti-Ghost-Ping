@@ -10,25 +10,20 @@ defmodule AntiGhostPing.Commands.Color do
     type: 3,
     autocomplete: true
   }]
-  def permissions, do: 16
+  def permissions, do: [:manage_channels]
 
-  def slash_command(interaction, color) do
-    resp = try do
+  def slash_command(interaction, [%{value: color}]) do
+    try do
       hex = parse_color(color)
       AntiGhostPing.Schema.Guilds.upsert_color(interaction.guild_id, hex)
       embed = %Nostrum.Struct.Embed{}
       |> put_title("Example Ghost Ping Alert")
       |> put_color(if(hex == -1, do: GhostPing.rand_color, else: hex))
       |> put_thumbnail("https://ghostping.xyz/static/assets/bot_logo.png")
-      %{content: "Color successfully set! Below is a preview of the color", embeds: [embed]}
+      [content: "Color successfully set! Below is a preview of the color", embed: embed]
     rescue
-      _ -> %{content: "Invalid Hex code. Ex. `#FFFFFF`"}
+      _ -> {:content, "Invalid Hex code. Ex. `#FFFFFF`"}
     end
-
-    Nostrum.Api.create_interaction_response!(interaction, %{
-      type: 4,
-      data: resp
-    })
   end
 
   def parse_color(color) do

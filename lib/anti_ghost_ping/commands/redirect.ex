@@ -9,28 +9,23 @@ defmodule AntiGhostPing.Commands.Redirect do
     type: 7,
     channel_types: [0, 5]
   }]
-  def permissions, do: 16
+  def permissions, do: [:manage_channels]
 
-  def slash_command(interaction, options) do
-    res = case options do
-      nil ->
-        case Guilds.upsert_redirect(interaction.guild_id, nil) do
-          {:ok, _} -> "Removed default ghost ping output channel."
-          {:error, _} -> "An error occurred, please try again."
-        end
-      [%{name: "channel", value: channel_id}] ->
-        case Guilds.upsert_redirect(interaction.guild_id, channel_id) do
-          {:ok, _} -> "Set default ghost ping alert channel to: <##{channel_id}>"
-          {:error, _} -> "An error occurred, please try again."
-        end
-      _ -> "An error occurred, please try again."
+  def slash_command(interaction, nil) do
+    resp = case Guilds.upsert_redirect(interaction.guild_id, nil) do
+      {:ok, _} -> "Removed default ghost ping output channel."
+      {:error, _} -> "An error occurred, please try again."
     end
 
-    Nostrum.Api.create_interaction_response!(interaction, %{
-      type: 4,
-      data: %{
-        content: res
-      }
-    })
+    {:content, resp}
+  end
+
+  def slash_command(interaction, [%{value: channel_id}]) do
+    resp = case Guilds.upsert_redirect(interaction.guild_id, channel_id) do
+      {:ok, _} -> "Set default ghost ping alert channel to: <##{channel_id}>"
+      {:error, _} -> "An error occurred, please try again."
+    end
+    
+    {:content, resp}
   end
 end

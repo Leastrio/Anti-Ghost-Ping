@@ -3,22 +3,18 @@ defmodule AntiGhostPing.Commands.Info do
 
   def description, do: "View info about the bot"
   def options, do: []
-  def permissions, do: 2147483648
+  def permissions, do: :everyone
 
-  def slash_command(interaction) do
+  def slash_command(_, _) do
     embed = %Nostrum.Struct.Embed{}
     |> put_description("""
-      - You can invite Anti Ghost Ping to your own server by clicking **[here](https://ghostping.xyz/invite)**
-      - Join the support server for help **[here](https://ghostping.xyz/discord)**
+      - You can invite Anti Ghost Ping to your own server by clicking **[here](https://discord.com/api/oauth2/authorize?client_id=699522828147490826&permissions=274878187648&scope=bot)**
+      - Join the support server for help **[here](https://discord.gg/aVvCdEDkSy)**
       - Vote **[here](https://top.gg/bot/699522828147490826/vote)** to show your support!
+      - **[Source Code](https://github.com/Leastrio/Anti-Ghost-Ping)**
       """)
     |> put_color(16711712)
 
-    Nostrum.Api.create_interaction_response!(interaction, %{
-      type: 4,
-      data: %{
-        embeds: [embed]
-      }
-    })
+    {:embed, embed}
   end
 end

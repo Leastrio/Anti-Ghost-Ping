@@ -6,9 +6,9 @@ defmodule AntiGhostPing.Commands.Mention do
     required: true,
     type: 5
   }]
-  def permissions, do: 16
+  def permissions, do: [:manage_channels]
 
-  def slash_command(interaction, choice) do
+  def slash_command(interaction, [%{value: choice}]) do
     res = case AntiGhostPing.Schema.Guilds.upsert_mention(interaction.guild_id, choice) do
       {:ok, _} -> case choice do
         true -> "Ghost ping alerts will now only contain mentions."
@@ -17,11 +17,6 @@ defmodule AntiGhostPing.Commands.Mention do
       {:error, _} -> "An error occurred, please try again."
     end
 
-    Nostrum.Api.create_interaction_response!(interaction, %{
-      type: 4,
-      data: %{
-        content: res
-      }
-    })
+    {:content, res}
   end
 end

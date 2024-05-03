@@ -31,21 +31,13 @@ defmodule AntiGhostPing.Commands.Whitelist do
       description: "Show all whitelisted users"
     }
   ]
-  def permissions, do: 16
+  def permissions, do: [:manage_channels]
 
-  def slash_command(interaction, [%{name: "list"}]) do
-    resp = %{
-      type: 4,
-      data: %{
-        embeds: [gen_list_embed(interaction.guild_id)]
-      }
-    }
-    Nostrum.Api.create_interaction_response!(interaction, resp)
-  end
+  def slash_command(interaction, [%{name: "list"}]), do: {:embed, gen_list_embed(interaction.guild_id)}
 
   def slash_command(interaction, [%{name: "add", options: [%{name: "member", value: id}]}]) do
     whitelist = AntiGhostPing.Schema.Whitelist.list(interaction.guild_id)
-    res = case Enum.any?(whitelist, fn whitelist_user -> whitelist_user == id end) do
+    resp = case Enum.any?(whitelist, fn whitelist_user -> whitelist_user == id end) do
       true -> "Member already whitelisted, no changes happened."
       false ->
         if Enum.count(whitelist) + 1 > 15 do
@@ -56,21 +48,21 @@ defmodule AntiGhostPing.Commands.Whitelist do
         end
     end
     
-    Nostrum.Api.create_interaction_response!(interaction, %{type: 4, data: %{content: res}})
+    {:content, resp}
   end
 
   def slash_command(interaction, [%{name: "remove", options: [%{name: "member", value: id}]}]) do
-    res = case AntiGhostPing.Schema.Whitelist.whitelisted?(interaction.guild_id, id) do
+    resp = case AntiGhostPing.Schema.Whitelist.whitelisted?(interaction.guild_id, id) do
       false -> "Member not in whitelist, no changed happened."
       true ->
         AntiGhostPing.Schema.Whitelist.remove_user(interaction.guild_id, id)
         "Member removed from whitelist."
     end
 
-    Nostrum.Api.create_interaction_response!(interaction, %{type: 4, data: %{content: res}})
+    {:content, resp}
   end
 
-  def gen_list_embed(guild_id) do
+  defp gen_list_embed(guild_id) do
     %Nostrum.Struct.Embed{}
       |> put_title("Whitelist")
       |> put_description(

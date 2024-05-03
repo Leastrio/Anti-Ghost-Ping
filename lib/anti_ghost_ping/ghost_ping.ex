@@ -26,7 +26,7 @@ defmodule AntiGhostPing.GhostPing do
   def send_alert(config, msg, {type, content}) do
     embed = %Nostrum.Struct.Embed{}
     |> put_title("Ghost Ping Found!")
-    |> put_thumbnail("https://ghostping.xyz/static/assets/bot_logo.png")
+    |> put_thumbnail("https://cdn.leastr.io/bot_logo.png")
     |> put_timestamp(DateTime.to_iso8601(msg.timestamp))
     |> put_field("Author:", "<@#{msg.author.id}>", true)
     |> put_field(String.capitalize(to_string(type)) <> ":", content, true)

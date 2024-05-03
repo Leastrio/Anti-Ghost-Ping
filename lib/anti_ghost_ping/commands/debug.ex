@@ -16,18 +16,19 @@ defmodule AntiGhostPing.Commands.Debug do
     }
   ]
 
-  def slash_command(interaction, server_id) do
+  def slash_command(interaction, [%{value: server_id}]) do
     Nostrum.Api.create_interaction_response!(interaction, %{type: 5})
 
-    data = case Integer.parse(server_id) do
+    resp = case Integer.parse(server_id) do
       {guild_id, _} ->
         case Nostrum.Cache.GuildCache.get(guild_id) do
           {:ok, guild} -> gen_resp(guild)
-          _ -> %{content: "Guild not found!"}
+          _ -> {:content, "Guild not found!"}
         end
-      _ -> %{content: "Invalid server id!"}
+      _ -> {:content, "Invalid server id!"}
     end
-    Nostrum.Api.edit_interaction_response!(interaction, data)
+
+    {:edit, resp}
   end
 
   def gen_resp(guild) do
@@ -36,15 +37,15 @@ defmodule AntiGhostPing.Commands.Debug do
       %{content: "I have administrator permissions in this server!"}
     else
       sorted = Enum.sort(channels, fn {first, _, _}, {second, _, _} -> first.position <= second.position end)
-      desc = Enum.reduce(sorted, "R S\n", fn {channel, read, send}, acc ->
-        acc <> "#{emoji(read)} #{emoji(send)} - #{channel.name}\n"
+      desc = Enum.reduce(sorted, "Read | Send\n", fn {channel, read, send}, acc ->
+        acc <> "#{emoji(read)} | #{emoji(send)} - #{channel.name}\n"
       end)
 
       embed = %Nostrum.Struct.Embed{}
       |> put_title("Debug")
       |> put_description(desc)
 
-      %{embeds: [embed]}
+      {:embed, embed}
     end
   end
 

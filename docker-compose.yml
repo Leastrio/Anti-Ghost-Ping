@@ -6,7 +6,9 @@ services:
     restart: always
     network_mode: "host"
     env_file:
-      - .env
+      - config.env
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
   database: 
     image: postgres:15.5
     restart: always

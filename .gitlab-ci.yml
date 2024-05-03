@@ -21,4 +21,5 @@ deploy:
   services:
     - docker:dind
   script:
-    - docker compose up --build --detach --remove-orphans -e BOT_TOKEN=${BOT_TOKEN}
+    - cp $CONFIG_FILE ./.env
+    - docker compose up --build --detach --remove-orphans

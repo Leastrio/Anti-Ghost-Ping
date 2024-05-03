@@ -5,6 +5,8 @@ services:
       - database
     restart: always
     network_mode: "host"
+    environment:
+      - BOT_TOKEN
   database:
     image: postgres:15.5
     restart: always

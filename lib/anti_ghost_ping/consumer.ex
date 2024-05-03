@@ -4,8 +4,7 @@ defmodule AntiGhostPing.Consumer do
   alias AntiGhostPing.Schema.Guilds
   alias AntiGhostPing.GhostPing
 
-  #@support_server 713504281260458066
-  @support_server 700419839092850698
+  @support_server 713504281260458066
 
   def handle_event({:READY, %{shard: {shard, num_shards}}, ws_state}) do
     # Make sure to only register application commands once, as the ready event can be sent multiple times

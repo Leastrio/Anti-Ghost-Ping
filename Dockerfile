@@ -14,6 +14,7 @@ RUN mix deps.compile
 
 COPY priv priv
 COPY lib lib
+COPY src src
 copy rel rel
 COPY .git .git
 

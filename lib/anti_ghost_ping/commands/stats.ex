@@ -5,14 +5,15 @@ defmodule AntiGhostPing.Commands.Stats do
   def options, do: []
   def permissions, do: :noone
 
-  def slash_command(_, _) do
+  def slash_command(interaction, _) do
+    Nostrum.Api.create_interaction_response!(interaction, %{type: 5})
     top = :agp_guild_qlc.top(5)
 
     embed = %Nostrum.Struct.Embed{}
             |> put_color(16711712)
             |> fill_fields(top)
 
-    {:embed, embed}
+    {:edit, {:embed, embed}}
   end
 
 

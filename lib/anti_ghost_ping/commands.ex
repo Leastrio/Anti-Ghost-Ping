@@ -1,5 +1,6 @@
 defmodule AntiGhostPing.Commands do
   alias AntiGhostPing.Commands
+  require Logger
 
   @commands %{
     "info" => Commands.Info,
@@ -40,13 +41,13 @@ defmodule AntiGhostPing.Commands do
   end
 
   def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: cmd, options: opts}} = interaction) do
-    resp =
+    reply =
       case Enum.find(@all_commands, :error, fn {name, _} -> cmd == name end) do
         {_, module} -> apply(module, :slash_command, [interaction, opts])
         :error -> {:content, "Unknown command"}
       end
 
-    case resp do
+    response = case reply do
       {:edit, data} ->
         Nostrum.Api.edit_interaction_response(interaction, build_interaction_reply(data))
 
@@ -65,24 +66,29 @@ defmodule AntiGhostPing.Commands do
       _ ->
         :noop
     end
+
+    case response do
+      {:error, err} -> Logger.error("Error replying to interaction!\n#{inspect err}")
+      _ -> :ok
+    end
   end
 
-  def build_interaction_reply(list) when is_list(list), do: build_interaction_reply(list, %{})
+  defp build_interaction_reply(list) when is_list(list), do: build_interaction_reply(list, %{})
 
-  def build_interaction_reply(tuple) when is_tuple(tuple),
+  defp build_interaction_reply(tuple) when is_tuple(tuple),
     do: build_interaction_reply([tuple], %{})
 
-  def build_interaction_reply([{:content, msg} | tail], reply),
+  defp build_interaction_reply([{:content, msg} | tail], reply),
     do: build_interaction_reply(tail, Map.put(reply, :content, msg))
 
-  def build_interaction_reply([{:embed, embed} | tail], reply),
+  defp build_interaction_reply([{:embed, embed} | tail], reply),
     do: build_interaction_reply(tail, Map.put(reply, :embeds, [embed]))
 
-  def build_interaction_reply([{:file, {name, content}} | tail], reply),
+  defp build_interaction_reply([{:file, {name, content}} | tail], reply),
     do: build_interaction_reply(tail, Map.put(reply, :file, %{name: name, body: content}))
 
-  def build_interaction_reply([:ephemeral | tail], reply),
+  defp build_interaction_reply([:ephemeral | tail], reply),
     do: build_interaction_reply(tail, Map.put(reply, :flags, 64))
 
-  def build_interaction_reply([], reply), do: reply
+  defp build_interaction_reply([], reply), do: reply
 end

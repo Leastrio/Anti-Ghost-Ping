@@ -15,6 +15,7 @@ defmodule AntiGhostPing.Commands.Debug do
       required: true
     }
   ]
+  def permissions, do: :everyone
 
   def slash_command(interaction, [%{value: server_id}]) do
     Nostrum.Api.create_interaction_response!(interaction, %{type: 5})

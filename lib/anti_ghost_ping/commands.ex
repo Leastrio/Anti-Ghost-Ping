@@ -8,15 +8,19 @@ defmodule AntiGhostPing.Commands do
     "mentions" => Commands.Mention,
     "color" => Commands.Color,
     "whitelist" => Commands.Whitelist,
-
-    # Support server only
-    "debug" => Commands.Debug
   }
 
-  def get_commands() do
-    @commands
-    |> Enum.filter(fn {name, _} -> name != "debug" end)
-    |> Enum.map(fn {name, module} ->
+  @support_commands %{
+    "debug" => Commands.Debug,
+    "stats" => Commands.Stats
+  }
+
+  @all_commands Map.merge(@commands, @support_commands)
+
+  def commands(), do: get_commands(@commands)
+  def support_commands(), do: get_commands(@support_commands)
+  defp get_commands(commands) do
+    Enum.map(commands, fn {name, module} ->
       %{
         name: name,
         description: apply(module, :description, []),
@@ -30,13 +34,14 @@ defmodule AntiGhostPing.Commands do
   def to_bitset(permissions) do
     case permissions do
       :everyone -> nil
+      :noone -> "0"
       perms -> to_string(Nostrum.Permission.to_bitset(perms))
     end
   end
 
   def handle_slash_command(%Nostrum.Struct.Interaction{data: %{name: cmd, options: opts}} = interaction) do
     resp =
-      case Enum.find(@commands, :error, fn {name, _} -> cmd == name end) do
+      case Enum.find(@all_commands, :error, fn {name, _} -> cmd == name end) do
         {_, module} -> apply(module, :slash_command, [interaction, opts])
         :error -> {:content, "Unknown command"}
       end

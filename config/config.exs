@@ -37,3 +37,11 @@ config :logger,
     [module: Nostrum.Shard.Event, level_lower_than: :error],
     [module: Nostrum.Shard.Dispatch]
   ]
+
+if config_env() == :prod do
+  config :anti_ghost_ping,
+    support_server_id: 713504281260458066
+else
+  config :anti_ghost_ping,
+    support_server_id: 700419839092850698
+end

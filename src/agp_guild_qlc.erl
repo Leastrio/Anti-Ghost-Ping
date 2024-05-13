@@ -5,16 +5,16 @@
 -define(CACHE, 'Elixir.Nostrum.Cache.GuildCache').
 
 top(Count) ->
-  Q = qlc:q([{MemberCount, Guild} || {_Id, #{member_count := MemberCount} = Guild} <- ?CACHE:query_handle()]),
+  Q = qlc:q([{MemberCount, Id, Guild} || {Id, #{member_count := MemberCount} = Guild} <- ?CACHE:query_handle()]),
   ?CACHE:wrap_qlc(fun () ->
     {Tree, _, _} = qlc:fold(
-      fun({MemberCount, Guild}, {Tree, Smallest, Size}) ->
+      fun({MemberCount, Id, Guild}, {Tree, Smallest, Size}) ->
           if 
             (MemberCount > Smallest) and (Size >= Count) ->
               {_, _, NewTree} = gb_trees:take_smallest(Tree),
-              {gb_trees:insert(MemberCount, Guild, NewTree), MemberCount, Size};
+              {gb_trees:insert({MemberCount, Id}, Guild, NewTree), MemberCount, Size};
             Size < Count ->
-              {gb_trees:insert(MemberCount, Guild, Tree), MemberCount, Size + 1};
+              {gb_trees:insert({MemberCount, Id}, Guild, Tree), MemberCount, Size + 1};
             true ->
               {Tree, Smallest, Size}
           end

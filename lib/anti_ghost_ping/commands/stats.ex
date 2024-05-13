@@ -18,7 +18,7 @@ defmodule AntiGhostPing.Commands.Stats do
 
 
   def fill_fields(embed, []), do: embed
-  def fill_fields(embed, [{count, guild} | rest]) do
+  def fill_fields(embed, [{{count, _}, guild} | rest]) do
     embed
     |> put_field("#{count}", guild.name)
     |> fill_fields(rest)

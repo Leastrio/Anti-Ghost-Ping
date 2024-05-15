@@ -14,7 +14,7 @@ defmodule AntiGhostPing do
 
   def profile() do
     :fprof.start()
-    :fprof.apply(:agp_guild_qlc, :apply, [5])
+    :fprof.apply(:agp_guild_qlc, :top, [5])
     :fprof.profile()
     :fprof.analyse(totals: false, dest: 'prof.analysis')
     :fprof.stop()

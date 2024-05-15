@@ -11,4 +11,12 @@ defmodule AntiGhostPing do
     Application.load(@app)
     Application.fetch_env!(@app, :ecto_repos)
   end
+
+  def profile() do
+    :fprof.start()
+    :fprof.apply(:agp_guild_qlc, :apply, [5])
+    :fprof.profile()
+    :fprof.analyse(totals: false, dest: 'prof.analysis')
+    :fprof.stop()
+  end
 end

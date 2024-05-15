@@ -14,7 +14,7 @@ defmodule AntiGhostPing.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:mnesia, :logger, :runtime_tools],
+      extra_applications: [:mnesia, :logger, :runtime_tools, :fprof],
       mod: {AntiGhostPing.Application, []}
     ]
   end

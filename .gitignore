@@ -29,3 +29,5 @@ anti_ghost_ping-*.tar
 /.direnv/
 
 .env
+
+profile/

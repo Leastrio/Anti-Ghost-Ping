@@ -22,7 +22,7 @@ defmodule AntiGhostPing.Consumer do
       :persistent_term.put(:agp_started, true)
     end
 
-    Nostrum.Api.update_shard_status(ws_state.conn_pid, :online, "/info")
+    Nostrum.Api.update_shard_status(ws_state.conn_pid, :online, "Sorry for the database loss! Explanation: https://gist.github.com/Leastrio/59f4c4c2d283e2caf51055ee767ae9fc")
     Logger.info("Shard #{shard + 1}/#{num_shards} connected")
   end
 

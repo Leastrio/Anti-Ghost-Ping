@@ -7,7 +7,6 @@ defmodule AntiGhostPing.Consumer do
   @support_server Application.compile_env!(:anti_ghost_ping, :support_server_id)
 
   def handle_event({:READY, %{shard: {shard, num_shards}}, ws_state}) do
-    # Make sure to only register application commands once, as the ready event can be sent multiple times
     if not :persistent_term.get(:agp_started, false) do
       case Nostrum.Api.bulk_overwrite_global_application_commands(AntiGhostPing.Commands.commands()) do
         {:error, err} -> Logger.error("An Error occurred bulk registering commands:\n#{err}")
@@ -22,7 +21,7 @@ defmodule AntiGhostPing.Consumer do
       :persistent_term.put(:agp_started, true)
     end
 
-    Nostrum.Api.update_shard_status(ws_state.conn_pid, :online, "Sorry for the database loss! Explanation in `/info` command")
+    Nostrum.Api.update_shard_status(ws_state.conn_pid, :online, "/info")
     Logger.info("Shard #{shard + 1}/#{num_shards} connected")
   end
 

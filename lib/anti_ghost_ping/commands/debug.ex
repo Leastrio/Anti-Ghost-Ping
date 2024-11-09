@@ -37,16 +37,29 @@ defmodule AntiGhostPing.Commands.Debug do
     if channels == :all do
       {:content, "I have administrator permissions in this server!"}
     else
-      sorted = Enum.sort(channels, fn {first, _, _}, {second, _, _} -> first.position <= second.position end)
-      desc = Enum.reduce(sorted, "Read | Send\n", fn {channel, read, send}, acc ->
-        acc <> "#{emoji(read)} | #{emoji(send)} - #{channel.name}\n"
+      desc = channels 
+      |> Enum.sort(fn {first, _, _}, {second, _, _} -> first.position <= second.position end)
+      |> Enum.map(fn {channel, read, send} ->
+        "  #{emoji(read)}   | #{emoji(send)} - #{channel.name}\n"
       end)
 
-      embed = %Nostrum.Struct.Embed{}
+      start_embed = %Nostrum.Struct.Embed{}
       |> put_title("Debug")
-      |> put_description(desc)
+      |> put_description("Read | Send Permission\n")
 
-      {:embed, embed}
+      embeds = Enum.chunk_while(desc, {24, start_embed}, fn curr_channel, {char_count, current_embed} -> 
+        channel_length = String.length(curr_channel)
+        if channel_length + char_count > 4096 do
+          {:cont, current_embed, {24 + channel_length, %Nostrum.Struct.Embed{} |> put_description("Read | Send Permission\n#{curr_channel}")}}
+        else
+          {:cont, {char_count + channel_length, current_embed |> put_description(current_embed.description <> curr_channel)}}
+        end
+      end,
+      fn {_char_count, current_embed} -> 
+        {:cont, current_embed, []}
+      end)
+
+      {:embeds, embeds}
     end
   end
 

@@ -84,6 +84,9 @@ defmodule AntiGhostPing.Commands do
   defp build_interaction_reply([{:embed, embed} | tail], reply),
     do: build_interaction_reply(tail, Map.put(reply, :embeds, [embed]))
 
+  defp build_interaction_reply([{:embeds, embeds} | tail], reply),
+    do: build_interaction_reply(tail, Map.put(reply, :embeds, embeds))
+
   defp build_interaction_reply([{:file, {name, content}} | tail], reply),
     do: build_interaction_reply(tail, Map.put(reply, :file, %{name: name, body: content}))
 

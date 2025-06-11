@@ -48,6 +48,12 @@ defmodule AntiGhostPing.Commands do
       end
 
     response = case reply do
+      {:edit, {:debug_embeds, embeds}} -> 
+        Nostrum.Api.edit_interaction_response(interaction, build_interaction_reply({:content, "Sending embeds..."}))
+        Enum.each(embeds, fn e ->
+          Nostrum.Api.create_message(interaction.channel_id, embeds: [e])
+        end)
+
       {:edit, data} ->
         Nostrum.Api.edit_interaction_response(interaction, build_interaction_reply(data))
 

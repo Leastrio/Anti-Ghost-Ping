@@ -59,7 +59,10 @@ defmodule AntiGhostPing.Commands.Debug do
         {:cont, current_embed, []}
       end)
 
-      {:embeds, embeds}
+      case embeds do
+        [embed] -> {:embed, embed}
+        _ -> {:debug_embeds, embeds}
+      end
     end
   end
 
